@@ -4,8 +4,6 @@ from telegram.ext import ConversationHandler
 import os
 from PIL import Image
 from telegram import ChatAction
-
-
 class Pic2pdf():
 
     __PICTOPDF = 0
@@ -30,6 +28,7 @@ class Pic2pdf():
         return self.__PICTOPDF
 
 
+################## Gets all the img inputs and saves them in a list #####################
     def imputImgs(self, update, context):
         
         photo = update.message.photo[-1].file_id
@@ -68,28 +67,29 @@ class Pic2pdf():
         return ConversationHandler.END 
 
 
+################## Converts the input images into a PDF ##################### 
     def conversionToPDF(self, update, context):
         
         context.bot.send_message(chat_id = update.effective_chat.id, 
-                                text = "Starting conversion", 
-                                parse_mode = "MarkdownV2")
-
-        imagesDownloaded = [image.download() for image in self.images]
+                            text = "Starting conversion", 
+                            parse_mode = "MarkdownV2")
         
+        imagesDownloaded = [image.download() for image in self.images]
+            
         try:
 
             with open("Converted.pdf", "wb") as nf:
 
                 image = img2pdf.convert(imagesDownloaded)
                 nf.write(image)
+            
+            self.sendPDF("Converted.pdf", update.message.chat)
 
         except:
 
             context.bot.send_message(chat_id = update.effective_chat.id, 
                                 text = "There was an error while converting the pictures", 
                                 parse_mode = "MarkdownV2")
-
-            self.sendPDF("Converted.pdf", update.message.chat)
 
         finally:
 
@@ -101,14 +101,14 @@ class Pic2pdf():
 
     def deleteDownloadedImages(self, images: list):
 
-        for image in images:
+        for image in dict.fromkeys(images):
             os.unlink(image)
 
 
     def sendPDF(self, filename, chat):
 
         chat.send_action(
-            action = ChatAction.UPLOAD_DOCUMENT
+            action = ChatAction.UPLOAD_DOCUMENT, timeout = None
         )
         chat.send_document(
             open(filename, "rb")

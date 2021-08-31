@@ -3,6 +3,7 @@ import logging
 import os
 from pics2pdf import Pic2pdf
 
+
 text = "Use /photopdf to make a pdf from pictures"
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -21,19 +22,19 @@ if __name__ == "__main__":
     dp = updater.dispatcher
     pictopdf = Pic2pdf()
 
-
+################## Add the handlers to the dispatcher #####################
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(ConversationHandler(
 
         entry_points= [CommandHandler('photopdf', pictopdf.pictopdfCommandHandlder)],
 
-        states= {pictopdf.getPicToPdfState(): [MessageHandler(Filters.photo, pictopdf.imputImgs)]},
+        states= {pictopdf.getPicToPdfState(): [MessageHandler(Filters.photo, pictopdf.imputImgs),
+                                            MessageHandler(Filters.regex(r"Cancel"),pictopdf.cancel),
+                                            MessageHandler(Filters.regex(r"Convert to PDF"),pictopdf.conversionToPDF)
+        ]},
 
         fallbacks=[]
     ))
-    dp.add_handler(MessageHandler(Filters.regex(r"Cancel"),pictopdf.cancel))
-    dp.add_handler(MessageHandler(Filters.regex(r"Convert to PDF"),pictopdf.conversionToPDF))
-
 
 updater.start_polling()
 updater.idle()
