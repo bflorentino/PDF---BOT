@@ -4,14 +4,12 @@ from telegram.ext import ConversationHandler
 import os
 from PIL import Image
 from telegram import ChatAction
+
 class Pic2pdf():
 
     __PICTOPDF = 0
     images = []
     picsSoFar = 0
-
-    def __init__(self) -> None:
-        pass
 
 
     def getPicToPdfState(self):
@@ -44,7 +42,7 @@ class Pic2pdf():
         self.showKeyboardButtons(update, context)
 
 
-    def showKeyboardButtons(self, update, context):
+    def showKeyboardButtons(self, update, context): 
         
         keyboard = [["Convert to PDF", "Cancel"]]
 
