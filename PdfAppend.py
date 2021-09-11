@@ -1,9 +1,7 @@
 from BotCommons import BotCommons
 import PyPDF2
-from telegram import ChatAction
 from telegram.ext import ConversationHandler
 import os
-from telegram import ReplyKeyboardMarkup
 
 class PdfAppend(BotCommons):
 
