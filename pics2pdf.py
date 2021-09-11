@@ -1,15 +1,15 @@
+from BotCommons import BotCommons
 import img2pdf
-from telegram import ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler
 import os
-from PIL import Image
-from telegram import ChatAction
 
-class Pic2pdf():
+class Pic2pdf(BotCommons):
 
-    __PICTOPDF = 0
-    images = []
-    picsSoFar = 0
+    def __init__(self):
+
+        self.__PICTOPDF = 0
+        self.images = []
+        self.picsSoFar = 0
 
 
     def getPicToPdfState(self):
@@ -39,30 +39,10 @@ class Pic2pdf():
                                 text = text, 
                                 parse_mode='MarkdownV2')
 
-        self.showKeyboardButtons(update, context)
-
-
-    def showKeyboardButtons(self, update, context): 
-        
-        keyboard = [["Convert to PDF", "Cancel"]]
-
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
-
-        context.bot.send_message(chat_id = update.effective_chat.id, 
-                                text = "Press one buttom below or continue sending pictures",
-                                reply_markup = reply_markup,
-                                parse_mode = "MarkdownV2")
-
-
-    def cancel(self, update, context):
-        
-        context.bot.send_message(chat_id = update.effective_chat.id, 
-                                text = "Cancelled", 
-                                parse_mode = "MarkdownV2")
-
-        self.clearData()
-
-        return ConversationHandler.END 
+        super().showKeyboardButtons(update, 
+                                context, 
+                                [["Convert to PDF", "Cancel"]], 
+                                "Press one button or continue sending pictures")
 
 
 ################## Converts the input images into a PDF ##################### 
@@ -81,7 +61,7 @@ class Pic2pdf():
                 image = img2pdf.convert(imagesDownloaded)
                 nf.write(image)
             
-            self.sendPDF("Converted.pdf", update.message.chat)
+            super().sendPdf(update.message.chat, "Converted.pdf",)
 
         except:
 
@@ -101,18 +81,6 @@ class Pic2pdf():
 
         for image in dict.fromkeys(images):
             os.unlink(image)
-
-
-    def sendPDF(self, filename, chat):
-
-        chat.send_action(
-            action = ChatAction.UPLOAD_DOCUMENT, timeout = None
-        )
-        chat.send_document(
-            open(filename, "rb")
-        )
-
-        os.unlink(filename)
 
 
     def clearData(self):

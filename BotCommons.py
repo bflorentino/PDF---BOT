@@ -1,6 +1,8 @@
 import abc
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import ConversationHandler
+from telegram import ChatAction
+import os
 
 class BotCommons(abc.ABC):
 
@@ -8,7 +10,9 @@ class BotCommons(abc.ABC):
         
         context.bot.send_message(chat_id = update.effective_chat.id, 
                                 text = "Cancelled", 
-                                parse_mode = "MarkdownV2") 
+                                parse_mode = "MarkdownV2")
+
+        self.clearData()
 
         return ConversationHandler.END
 
@@ -26,3 +30,16 @@ class BotCommons(abc.ABC):
     @abc.abstractmethod
     def clearData(self):
         """Clears lists"""
+
+
+####### Send output PDF to chat ######
+    def sendPdf(self,  chat, filename):
+
+        chat.send_action(
+            action = ChatAction.UPLOAD_DOCUMENT, timeout = None
+        )
+        chat.send_document(
+            open(filename, "rb")
+        )
+
+        os.unlink(filename)

@@ -13,7 +13,6 @@ Use /mergepdf to merge pdf files
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 
-
 def start(update, context):
 
     context.bot.send_message(chat_id = update.effective_chat.id, 
@@ -43,8 +42,7 @@ if __name__ == "__main__":
                 mergepdf.getPdfAppendStatus():[MessageHandler(Filters.document, mergepdf.pdfInput),
                                             MessageHandler(Filters.regex(r"Cancel"), mergepdf.cancel),
                                             MessageHandler(Filters.regex(r"Merge PDF"), mergepdf.makeMergingProcess),
-                                            MessageHandler(Filters.regex(r"One page"), mergepdf.setSelectedMode ),
-                                            MessageHandler(Filters.regex(r"[0-9]*"), mergepdf.inputOnePage),
+
                                             ]
                 },
 
